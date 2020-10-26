@@ -48,7 +48,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return '{"status" : "show"}';
+        $user = users::find($id);
+        return ($user->toJson());
+        
     }
 
     /**
