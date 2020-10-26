@@ -35,9 +35,18 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req)
     {
-        return '{"status" : "store"}';
+        $params = $req->json()->all();
+        $user = new users();
+        $user->first_name=$req->first_name;
+        $user->last_name=$req->last_name;
+        $user->email=$req->email;
+        $user->password=md5($req->password);
+        $user->save();
+        return $user->toJson();
+
+
     }
 
     /**
@@ -71,9 +80,35 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $req, $id)
     {
-        return '{"status" : "update"}';
+        $user = users::find($id);
+        if ($req->first_name == null){
+            $user->first_name = $user->first_name;
+        }else{
+            $user->first_name = $req->first_name;
+        }
+
+        if ($req->last_name == null){
+            $user->last_name = $user->last_name;
+        }else{
+            $user->last_name = $req->last_name;
+        }
+
+        if ($req->email == null){
+            $user->email = $user->email;
+        }else{
+            $user->email = $req->email;;
+        }
+
+        if (md5($req->password) == null){
+            $user->password = $user->password;
+        }else{
+            $user->password = md5($req->password);
+        }
+        $user->save();
+        $user = users::all();
+        return $user->toJson();
     }
 
     /**
@@ -84,6 +119,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = users::destroy($id);
+        $user = users::all();
+        return ($user->toJson());
     }
 }
